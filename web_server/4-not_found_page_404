@@ -1,17 +1,35 @@
 #!/usr/bin/env bash
-# Configures Nginx with a custom 404 page containing Ceci n'est pas une page
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
-apt-get install -y nginx
+# script that install nginx and configure it to redirect to another page when
+# accessing the /redirect_me page.
+sudo apt update -y
+sudo apt install nginx -y
 
-echo 'Holberton School for the win!' > /var/www/html/index.html
-echo 'Holberton School for the win!' > /var/www/html/index.nginx-debian.html
+mkdir /etc/nginx/html
+touch /etc/nginx/html/index.html
+touch /etc/nginx/html/404.html
+echo "Holberton School" > /etc/nginx/html/index.html
+echo "Ceci n'est pas une page" > /etc/nginx/html/404.html
 
-echo "Ceci n'est pas une page" > /var/www/html/404.html
-
-sed -i '/server_name _;/a \\n\tlocation \/redirect_me {\n\t\treturn 301 https:\/\/www.youtube.com\/watch?v=QH2-TGUlwu4;\n\t}' /etc/nginx/sites-available/default
-
-sed -i '/server_name _;/a \\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}' /etc/nginx/sites-available/default
-
-service nginx start
-service nginx reload
+# store configuration content
+new_config=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+               root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+                try_files \$uri \$uri/ =404;
+        }
+        location /redirect_me { 
+            return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+        }
+	error_page 404 /404.html;
+	location /404 {
+	    root /etc/nginx/html;
+	    internal;
+        }
+}
+"
+echo "$new_config" > /etc/nginx/sites-available/default
+sudo service nginx restart
