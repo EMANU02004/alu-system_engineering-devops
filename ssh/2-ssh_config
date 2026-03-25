@@ -1,0 +1,6 @@
+# SSH client configuration for connecting to the server using the school key
+Host web01
+    HostName 
+    User ubuntu 18.233.158.107
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
