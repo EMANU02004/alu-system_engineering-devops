@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Configures Nginx with a custom HTTP response header
+
+apt-get update -y -qq
+apt-get install -y nginx
+
+ufw allow 'Nginx HTTP' 2>/dev/null || true
+
+HOSTNAME=$(hostname)
+
+NGINX_CONF="/etc/nginx/sites-available/default"
+
+if ! grep -q "X-Served-By" "$NGINX_CONF"; then
+    sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $HOSTNAME;/" "$NGINX_CONF"
+fi
+
+nginx -t && systemctl restart nginx
+systemctl enable nginx
+
+echo "Nginx configured. X-Served-By: $HOSTNAME"
