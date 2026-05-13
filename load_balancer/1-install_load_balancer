@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# install load balancer
-
+# Installs and configures HAproxy load balancer
 apt-get update -y
 apt-get install -y haproxy
 cat > /etc/haproxy/haproxy.cfg << 'HAPROXY'
@@ -20,4 +19,6 @@ backend http_back
     server web-02 44.201.84.254:80 check
 HAPROXY
 service haproxy restart
+echo "web-01 18.233.158.107"
+echo "web-02 44.201.84.254"
 
