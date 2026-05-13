@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Configures /redirect_me as a "301 Moved Permanently".
+# Configures Nginx with custom X-Served-By header
 apt-get update -y
 apt-get install -y nginx
 HOSTNAME=$(hostname)
