@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Connect to a server as ubuntu using the private key ~/.ssh/school.
+# Usage: ./0-use_a_private_key [HOST]
+# If HOST is not provided, defaults to 8.8.8.8 (as in the example).
+set -euo pipefail
+
+HOST="${1:-8.8.8.8}"
+
+ssh -i ~/.ssh/school ubuntu@"$HOST"
