@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # Configures /redirect_me as a "301 Moved Permanently".
-# Includes a custom 404 page containing "Ceci n'est pas une page".
 apt-get update -y
 apt-get install -y nginx
 HOSTNAME=$(hostname)
-sed -i "s/http {/http {\n\tadd_header X-Served-By $HOSTNAME;/" /etc/nginx/nginx.conf
+sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $HOSTNAME;/" /etc/nginx/sites-available/default
 service nginx restart
-
