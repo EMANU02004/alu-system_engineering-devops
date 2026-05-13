@@ -2,17 +2,6 @@
 # Configures Nginx with custom X-Served-By header
 apt-get update -y
 apt-get install -y nginx
-HOSTNAME=$(hostname)
-echo "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /var/www/html;
-    index index.html index.htm;
-    server_name _;
-    add_header X-Served-By $HOSTNAME;
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-}" > /etc/nginx/sites-available/default
+sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $(hostname);/" /etc/nginx/sites-available/default
 service nginx restart
 
