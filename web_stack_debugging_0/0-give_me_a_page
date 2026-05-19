@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Configures Apache server inside container to return "Hello Holberton"
-
-CONTAINER_ID=$(docker ps -q --filter ancestor=holbertonschool/265-0)
-docker exec "$CONTAINER_ID" service apache2 start
-docker exec "$CONTAINER_ID" sh -c 'echo "Hello Holberton" > /var/www/html/index.html'
-echo "apache2 is running"
+# Fixes the web stack to return Hello Holberton
+echo "Hello Holberton" > /var/www/html/index.html
+service apache2 start
