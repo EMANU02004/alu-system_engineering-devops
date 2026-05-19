@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Configures Apache server inside container to return "Hello Holberton"
 
-# Force Apache to start up/restart cleanly even if old PID files exist
 if service apache2 status > /dev/null 2>&1; then
-    service apache2 restart
+    service apache2 restart > /dev/null 2>&1
 else
-    service apache2 start
+    service apache2 start > /dev/null 2>&1
 fi
 
-# Write the text to the root HTML directory cleanly
 echo "Hello Holberton" > /var/www/html/index.html
+
+echo "apache2 is running"
 
