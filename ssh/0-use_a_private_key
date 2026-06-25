@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+<<<<<<< HEAD
 # Bash script that uses ssh to connect to a server using the   private key
 # key ~/.ssh/school with the user ubuntu
 ssh -i ~/.ssh/school ubuntu@54.90.39.8
+=======
+# Connect to a server as ubuntu using the private key ~/.ssh/school.
+# Usage: ./0-use_a_private_key [HOST]
+# If HOST is not provided, defaults to 8.8.8.8 (as in the example).
+set -euo pipefail
+
+HOST="${1:-8.8.8.8}"
+
+ssh -i ~/.ssh/school ubuntu@"$HOST"
+>>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48

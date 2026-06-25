@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/usr/bin/env bash
 # Config file
 
@@ -8,3 +9,10 @@ Host *
     GSSAPIDelegateCredentials no
     IdentityFile ~/.ssh/school
     PasswordAuthentication no
+=======
+# ~/.ssh/config
+
+Host ubuntu
+   IdentityFile ~/.ssh/school
+   PasswordAuthentication no
+>>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48

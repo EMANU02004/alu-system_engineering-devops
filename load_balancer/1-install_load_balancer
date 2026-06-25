@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/usr/bin/env bash
 # Script to install and configure HAProxy as a load balancer for web-01 and web-02
 
@@ -50,3 +51,29 @@ systemctl enable haproxy
 
 # Print configuration info to ensure output contains required strings
 echo "HAProxy configured with servers: web-01 and web-02"
+=======
+#!/usr/bin/env bash
+# Installs and configures HAproxy load balancer
+apt-get update -y
+apt-get install -y haproxy
+cat > /etc/haproxy/haproxy.cfg << 'HAPROXY'
+global
+    daemon
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+frontend http_front
+    bind *:80
+    default_backend http_back
+backend http_back
+    balance roundrobin
+    server web-01 18.233.158.107:80 check
+    server web-02 44.201.84.254:80 check
+HAPROXY
+service haproxy restart
+echo "web-01 18.233.158.107"
+echo "web-02 44.201.84.254"
+
+>>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48
