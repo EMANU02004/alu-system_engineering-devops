@@ -5,11 +5,15 @@
 apt-get update -y
 apt-get install -y nginx
 
+# Create custom 404 page
+echo "Ceci n'est pas une page" | tee /var/www/html/404.html
+
 # Remove any existing X-Served-By header to avoid duplicates
 sed -i '/add_header X-Served-By/d' /etc/nginx/sites-available/default
 
-# Add custom header with hostname
-sed -i '/server_name _;/a \\tadd_header X-Served-By $hostname;' /etc/nginx/sites-available/default
+# Add custom header using hostname command
+HOSTNAME=$(hostname)
+sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $HOSTNAME;/" /etc/nginx/sites-available/default
 
 # Enable site if not enabled
 if [ ! -f /etc/nginx/sites-enabled/default ]; then
