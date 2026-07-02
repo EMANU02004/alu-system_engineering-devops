@@ -1,24 +1,19 @@
-<<<<<<< HEAD
 #!/usr/bin/env bash
-# Script to install and configure HAProxy as a load balancer for web-01 and web-02
+# Installs and configures HAproxy on lb-01
 
-# Update and install required packages
 apt-get update -y
 apt-get install -y haproxy
 
-# Enable HAProxy
-echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+# Enable HAproxy to be managed via init script
+echo "ENABLED=1" >> /etc/default/haproxy
 
-# Backup existing HAProxy config
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
-
-# Configure HAProxy
-cat > /etc/haproxy/haproxy.cfg << EOF
+# Configure HAproxy
+cat > /etc/haproxy/haproxy.cfg << 'EOF'
 global
     log /dev/log local0
     log /dev/log local1 notice
     chroot /var/lib/haproxy
-    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
     stats timeout 30s
     user haproxy
     group haproxy
@@ -32,6 +27,13 @@ defaults
     timeout connect 5000
     timeout client 50000
     timeout server 50000
+    errorfile 400 /etc/haproxy/errors/400.http
+    errorfile 403 /etc/haproxy/errors/403.http
+    errorfile 408 /etc/haproxy/errors/408.http
+    errorfile 500 /etc/haproxy/errors/500.http
+    errorfile 502 /etc/haproxy/errors/502.http
+    errorfile 503 /etc/haproxy/errors/503.http
+    errorfile 504 /etc/haproxy/errors/504.http
 
 frontend http_front
     bind *:80
@@ -39,41 +41,10 @@ frontend http_front
 
 backend http_back
     balance roundrobin
-    server web-01 54.197.196.217:80 check
-    server web-02 54.196.135.128:80 check
+    server 7034-web-01 18.233.158.107:80 check
+    server 7034-web-02 44.201.84.254:80 check
 EOF
 
-# Restart HAProxy service
+# Restart HAproxy
 service haproxy restart
 
-# Enable HAProxy to start on boot
-systemctl enable haproxy
-
-# Print configuration info to ensure output contains required strings
-echo "HAProxy configured with servers: web-01 and web-02"
-=======
-#!/usr/bin/env bash
-# Installs and configures HAproxy load balancer
-apt-get update -y
-apt-get install -y haproxy
-cat > /etc/haproxy/haproxy.cfg << 'HAPROXY'
-global
-    daemon
-defaults
-    mode http
-    timeout connect 5000ms
-    timeout client 50000ms
-    timeout server 50000ms
-frontend http_front
-    bind *:80
-    default_backend http_back
-backend http_back
-    balance roundrobin
-    server web-01 18.233.158.107:80 check
-    server web-02 44.201.84.254:80 check
-HAPROXY
-service haproxy restart
-echo "web-01 18.233.158.107"
-echo "web-02 44.201.84.254"
-
->>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48
