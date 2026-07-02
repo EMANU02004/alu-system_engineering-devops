@@ -1,30 +1,17 @@
-<<<<<<< HEAD
 #!/usr/bin/env bash
-# Configures Nginx with a custom HTTP response header
+# Configures Nginx with a custom HTTP response header X-Served-By
+# shellcheck disable=SC2154
 
-apt-get update -y -qq
+apt-get update
 apt-get install -y nginx
 
-ufw allow 'Nginx HTTP' 2>/dev/null || true
+# Add custom header with hostname
+sed -i '/server_name _;/a \\tadd_header X-Served-By $hostname;' /etc/nginx/sites-available/default
 
-HOSTNAME=$(hostname)
-
-NGINX_CONF="/etc/nginx/sites-available/default"
-
-if ! grep -q "X-Served-By" "$NGINX_CONF"; then
-    sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $HOSTNAME;/" "$NGINX_CONF"
+# Enable site if not enabled
+if [ ! -f /etc/nginx/sites-enabled/default ]; then
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 fi
 
-nginx -t && systemctl restart nginx
-systemctl enable nginx
-
-echo "Nginx configured. X-Served-By: $HOSTNAME"
-=======
-#!/usr/bin/env bash
-# Configures Nginx with custom X-Served-By header
-apt-get update -y
-apt-get install -y nginx
-sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $(hostname);/" /etc/nginx/sites-available/default
 service nginx restart
 
->>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48
