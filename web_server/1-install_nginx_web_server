@@ -1,21 +1,29 @@
 #!/usr/bin/env bash
-<<<<<<< HEAD
-# installs nginx and configure it to listen on port 80
-# print "Hello World"
+# Installs and configures Nginx on Ubuntu
 
-sudo apt-get update
-sudo apt-get -y install nginx
-echo 'Holberton School' | sudo tee /var/www/html/index.html
-sudo service nginx start
-=======
-# Installs Nginx with the following configurations:
-#+    Listens on port 80.
-#+    Returns a page containing "Holberton School" when queried
-#++    at the root with a curl GET request.
+apt-get update
+apt-get install -y nginx
 
-apt-get update -y
-apt-get install nginx -y 
-sudo ufw allow 'Nginx HTTP'
-sh -c 'echo "Holberton School" > /var/www/html/index.html'
+# Add Holberton School to default page
+echo "Holberton School" > /var/www/html/index.html
+
+# Allow port 80
+ufw allow 'Nginx HTTP'
+
+# Restart nginx without systemctl
 service nginx restart
->>>>>>> 2b70e0d7bbabd361c2a6524add6ce44c8e8b3f48
+#!/usr/bin/env bash
+# Installs and configures Nginx on Ubuntu
+
+apt-get update
+apt-get install -y nginx
+
+# Add Holberton School to default page
+echo "Holberton School" > /var/www/html/index.html
+
+# Allow port 80
+ufw allow 'Nginx HTTP'
+
+# Restart nginx without systemctl
+service nginx restart
+
