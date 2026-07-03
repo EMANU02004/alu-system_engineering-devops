@@ -41,3 +41,6 @@ echo "ENABLED=1" > /etc/default/haproxy
 # Restart HAproxy
 service haproxy restart
 
+echo "web-01 18.233.158.107"
+echo "web-02 44.201.84.254"
+
