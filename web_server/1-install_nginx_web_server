@@ -20,8 +20,8 @@ backend http_back
     mode http
     option forwardfor
     option http-server-close
-    server 7034-web-01 18.233.158.107:80 check
-    server 7034-web-02 44.201.84.254:80 check
+    server web-01 18.233.158.107:80 check
+    server web-02 44.201.84.254:80 check
 EOF
 
 # Enable HAproxy init script management
