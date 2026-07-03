@@ -4,29 +4,40 @@
 apt-get update -y
 apt-get install -y haproxy
 
-# Remove any existing frontend/backend blocks to avoid duplicates
-sed -i '/^frontend/,$ d' /etc/haproxy/haproxy.cfg
+# Configure HAproxy
+cat > /etc/haproxy/haproxy.cfg << 'EOF'
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
 
-# Append frontend and backend config
-cat >> /etc/haproxy/haproxy.cfg << 'EOF'
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
 
 frontend http_front
     bind *:80
-    mode http
     default_backend http_back
 
 backend http_back
     balance roundrobin
-    mode http
-    option forwardfor
-    option http-server-close
     server web-01 18.233.158.107:80 check
     server web-02 44.201.84.254:80 check
 EOF
 
-# Enable HAproxy init script management
-sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+# Enable HAproxy to be managed via init script
+echo "ENABLED=1" > /etc/default/haproxy
 
-# Validate and restart
-haproxy -c -f /etc/haproxy/haproxy.cfg
+# Restart HAproxy
 service haproxy restart
+
