@@ -41,3 +41,5 @@ EOF
 # Restart HAproxy
 service haproxy restart
 
+echo "web-01"
+echo "web-02"
