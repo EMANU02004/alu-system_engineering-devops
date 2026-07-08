@@ -5,20 +5,33 @@
 apt-get update -y
 apt-get install -y nginx
 
-# Create custom 404 page
-echo "Ceci n'est pas une page" | tee /var/www/html/404.html
+# Write a complete nginx default config with X-Served-By header
+cat > /etc/nginx/sites-available/default << EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Remove any existing X-Served-By header to avoid duplicates
-sed -i '/add_header X-Served-By/d' /etc/nginx/sites-available/default
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
 
-# Add custom header using hostname command
-HOSTNAME=$(hostname)
-sed -i "s/server_name _;/server_name _;\n\tadd_header X-Served-By $HOSTNAME;/" /etc/nginx/sites-available/default
+    server_name _;
+    add_header X-Served-By \$hostname;
 
-# Enable site if not enabled
-if [ ! -f /etc/nginx/sites-enabled/default ]; then
-    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-fi
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+}
+EOF
+
+# Remove any other enabled sites
+rm -f /etc/nginx/sites-enabled/*
+
+# Enable only default site
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 service nginx restart
-
