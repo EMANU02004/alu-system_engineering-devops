@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 # Fixes Nginx to listen on port 80
 
-# Enable the default site if not enabled
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-
-# Start nginx service
-nginx -g 'daemon off;' &
-service nginx start
+service nginx restart
 
