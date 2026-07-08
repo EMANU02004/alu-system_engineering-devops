@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
 # Configures Nginx to run as nginx user on port 8080
 
-# Create nginx user if it doesn't exist
-id -u nginx &>/dev/null || useradd --no-create-home nginx
+# Change user to nginx in nginx.conf
+sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf
 
-# Update nginx.conf to run as nginx user
-sed -i 's/^user .*/user nginx;/' /etc/nginx/nginx.conf
+# Change port to 8080
+sed -i 's/listen 80/listen 8080/g' /etc/nginx/sites-enabled/default
+sed -i 's/listen \[::\]:80/listen [::]:8080/g' /etc/nginx/sites-enabled/default
 
-# If user line doesn't exist, add it
-grep -q "^user nginx" /etc/nginx/nginx.conf || sed -i '1s/^/user nginx;\n/' /etc/nginx/nginx.conf
-
-# Update all config files to listen on port 8080 instead of 80
-find /etc/nginx -name "*.conf" -exec sed -i 's/listen 80/listen 8080/g' {} \;
-find /etc/nginx -name "*.conf" -exec sed -i 's/listen \[::\]:80/listen [::]:8080/g' {} \;
-sed -i 's/listen 80/listen 8080/g' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80/listen [::]:8080/g' /etc/nginx/sites-available/default
-
-# Fix permissions
-mkdir -p /var/lib/nginx/body
-chown -R nginx:nginx /var/lib/nginx
-chown -R nginx:nginx /var/log/nginx
-
-# Stop and restart nginx
-nginx -s stop 2>/dev/null || pkill nginx 2>/dev/null
+# Kill and restart nginx
+pkill nginx
 sleep 1
 nginx
 
