@@ -4,6 +4,9 @@
 apt-get update -y
 apt-get install -y haproxy
 
+# Enable HAproxy to be managed via init script
+echo "ENABLED=1" > /etc/default/haproxy
+
 # Configure HAproxy
 cat > /etc/haproxy/haproxy.cfg << 'EOF'
 global
@@ -35,8 +38,11 @@ backend http_back
     server web-02 44.201.84.254:80 check
 EOF
 
-# Enable HAproxy to be managed via init script
-echo "ENABLED=1" > /etc/default/haproxy
-
 # Restart HAproxy
 service haproxy restart
+<<<<<<< HEAD
+=======
+
+echo "web-01"
+echo "web-02"
+>>>>>>> b70ea600d7ec806dee0650e4aac6ff88eab1108b
