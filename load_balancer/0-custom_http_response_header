@@ -1,37 +1,10 @@
 #!/usr/bin/env bash
-# Configures Nginx with a custom HTTP response header X-Served-By
-# shellcheck disable=SC2154
+# Configures a brand new Ubuntu machine with Nginx and custom X-Served-By header
 
 apt-get update -y
 apt-get install -y nginx
 
-# Write a complete nginx default config with X-Served-By header
-cat > /etc/nginx/sites-available/default << EOF
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-
-    server_name _;
-    add_header X-Served-By \$hostname;
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-
-    error_page 404 /404.html;
-    location = /404.html {
-        internal;
-    }
-}
-EOF
-
-# Remove any other enabled sites
-rm -f /etc/nginx/sites-enabled/*
-
-# Enable only default site
-ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sed -i "/listen 80 default_server;/a\\\tadd_header X-Served-By \$hostname;" /etc/nginx/sites-available/default
 
 service nginx restart
+
