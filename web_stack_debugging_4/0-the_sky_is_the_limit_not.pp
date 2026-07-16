@@ -1,6 +1,6 @@
-# 0-the_sky_is_the_limit_not.pp
+# Raises Nginx ULIMIT so it stops failing under load (Too many open files)
 exec { 'fix--for-nginx':
-  command => 'sed -i "s/15/4096/" /etc/default/nginx && nginx -s reload',
-  path    => '/usr/local/bin/:/bin/:/usr/bin/'
+  command  => 'sed -i "s/15/4096/" /etc/default/nginx && service nginx restart',
+  path     => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+  provider => shell,
 }
-
